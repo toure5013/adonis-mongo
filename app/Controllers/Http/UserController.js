@@ -11,12 +11,32 @@ class UserController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-    const users = User.all();
-    response.json({
-      message : "all users returned",
-      users: users
-    });
+  async index ({ request, auth,  response, view }) {
+    try {
+      const isauth = await auth.check()
+      console.log(auth.check());
+
+      if(isauth){
+        const users = await User.all();
+        response.json({
+          message : "all users returned",
+          users: users
+        });
+      }else{
+        response.status(401).json( {
+          error: true,
+          message : 'Missing or invalid jwt token'
+        });
+      }
+
+    } catch (error) {
+      response.status(401).json( {
+        error: true,
+        message : 'Missing or invalid jwt token'
+      });
+    }
+
+
   }
 
 
@@ -58,20 +78,19 @@ class UserController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, request, auth,  response, view }) {
+    try {
+      await auth.check()
+      const user =  User.all();
+      response.json({
+        message : "all users returned",
+        users: user
+      });
+    } catch (error) {
+      response.send('Missing or invalid jwt token')
+    }
   }
 
-  /**
-   * Render a form to update an existing payement.
-   * GET users/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
 
   /**
    * Update payement details.
@@ -81,7 +100,7 @@ class UserController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, auth, response }) {
   }
 
   /**
@@ -92,7 +111,7 @@ class UserController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, request, auth, response }) {
   }
 }
 

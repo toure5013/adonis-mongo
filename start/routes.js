@@ -17,25 +17,22 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
-
-
-//User routes
 Route.group(() => {
-  Route.get('users', "UserController.index");
-  Route.get('user/:id', "UserController.show");
-  Route.post('user', "UserController.store");
-  Route
-  .post('login', 'UserController.login')
-  .middleware('guest');
-  Route
-  .get('users/:id', 'UserController.show')
-  .middleware('auth');
-}).prefix('api');
+
+  //Authentication
+  Route.post('login', "AuthController.login");
+
+  //User routes
+  Route.get('users', "UserController.index").middleware('auth');
+  Route.post('user', 'UserController.store');
+  Route.get('user/:id', "UserController.show").middleware('auth');
+  Route.put('user/:id', 'UserController.update').middleware('auth')
+  Route.delete('user/id', 'UserController.delete').middleware('auth')
 
 
-//For all payement route
-Route.group(() => {
+  //For all payement route
   Route.get('test', "PayementController.index");
   Route.post('test', "PayementController.store");
+
 
 }).prefix('api');
