@@ -7,7 +7,10 @@ class PayementSchema extends Schema {
   up () {
     this.create('payements', (collection) => {
       collection.increments()
-      collection.timestamps()
+      collection.string('payement_number', 255).notNullable().unique()
+      collection.string('payement_channel', 255).notNullable()
+      collection.integer('user_id').unsigned().references('id').incollection('users')
+      collection.integer('collector_id').unsigned().references('id').incollection('users')
     })
   }
 

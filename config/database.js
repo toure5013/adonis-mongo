@@ -94,8 +94,8 @@ module.exports = {
    connection: {
      host: Env.get('DB_HOST', 'localhost'),
      port: Env.get('DB_PORT', 27017),
-     username: Env.get('DB_USER', 'admin'),
-     password: Env.get('DB_PASSWORD', ''),
+     username: Env.get('DB_USER', 'toure5013'),
+     password: Env.get('DB_PASSWORD', 'azerty'),
      database: Env.get('DB_DATABASE', 'api-db'),
      options: {
        // replicaSet: Env.get('DB_REPLICA_SET', '')
@@ -107,6 +107,7 @@ module.exports = {
        // authSource: Env.get('DB_AUTH_SOURCE', ''),
        // authMechanism: Env.get('DB_AUTH_MECHANISM', ''),
        // other options
+       useUnifiedTopology: true
      }
    }
  }

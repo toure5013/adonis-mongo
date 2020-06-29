@@ -21,18 +21,21 @@ Route.group(() => {
 
   //Authentication
   Route.post('login', "AuthController.login");
+  Route.get('logout', 'AuthController.logout').middleware('auth')
+
+
 
   //User routes
   Route.get('users', "UserController.index").middleware('auth');
   Route.post('user', 'UserController.store');
   Route.get('user/:id', "UserController.show").middleware('auth');
-  Route.put('user/:id', 'UserController.update').middleware('auth')
-  Route.delete('user/id', 'UserController.delete').middleware('auth')
+  Route.put('user/:id', 'UserController.update').middleware('auth');
+  Route.delete('user/id', 'UserController.delete').middleware('auth');
+
+
 
 
   //For all payement route
-  Route.get('test', "PayementController.index");
-  Route.post('test', "PayementController.store");
-
-
+  Route.get('payement', "PayementController.index");
+  Route.post('payement', "PayementController.store");
 }).prefix('api');

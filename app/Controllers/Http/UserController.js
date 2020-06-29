@@ -1,5 +1,6 @@
 'use strict'
 const User = use('App/Models/User');
+const Wallet = use('App/Models/Wallet');
 const Logger = use('Logger');
 class UserController {
     /**
@@ -19,13 +20,14 @@ class UserController {
       if(isauth){
         const users = await User.all();
         response.json({
+          error: false,
           message : "all users returned",
           users: users
         });
       }else{
         response.status(401).json( {
           error: true,
-          message : 'Missing or invalid jwt token'
+          message : 'Missing or d jwt token'
         });
       }
 
@@ -51,22 +53,50 @@ class UserController {
    */
   async store ({ request, response }) {
 
-    const {username, email, password} = request.post();
+    console.log(request.post())
+    // console.log(request.body)
+
+    if(!request.post()){
+      response.status(401).json({
+        error : true,
+        message : "Data invalid",
+      });
+    }
+    var { firstname, lastname,phone, username, email, password, isactive, longitude, latitude} = request.post();
+    const status = 10000;
+    longitude == null ? longitude = 0 : longitude = longitude;
+    latitude == null ? latitude = 0 : latitude = latitude;
+    isactive == null ? isactive = 0 : isactive = isactive;
+
     try {
-      const user = await User.create({ username : username, email: email , password: password});
+      const user = await User.create({firstname: firstname, lastname:lastname, phone: phone, username : username, email: email , password: password, isactive: isactive, status: status, longitude: longitude, latitude: latitude});
       Logger.info('Saved one user' + new Date());
+      //Create user Wallet here
+      function makeid(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+     }
+      var wallet_number = makeid(12);
+      console.log(wallet_number);
+
+      const wallet = await Wallet.create({user_id : user.id, amount:0, wallet_number:wallet_number , paypal: null, bank: null, mobile: user.phone, is_active:true});
       response.status(200).json({
-        message : "User created",
+        error: false,
+        message : "User & Wallet created",
         id : user.id,
-        user: user
+        user: user,
+        wallet : wallet
       });
     } catch (error) {
       response.status(error.status).json({
         message : "An error occured",
       });
     }
-
-
   }
 
   /**
